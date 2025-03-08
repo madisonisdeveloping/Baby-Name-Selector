@@ -168,7 +168,7 @@ class AppleStyleApp(tk.Tk):
                 self.highlight_name(random_name)
                 self.show_error(f"Random name suggestion: {random_name}")
             else:
-                self.show_error("No names found matching the criteria.")
+                self.show_error("No more names found.")
         except Exception as e:
             self.show_error(f"Error: {e}")
 
