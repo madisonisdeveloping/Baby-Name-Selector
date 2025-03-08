@@ -1,8 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import gspread
 from google.oauth2.service_account import Credentials
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 
 # Load Google Sheets API credentials securely
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
@@ -48,6 +48,11 @@ def remove_name():
         return jsonify({"error": str(e)}), 500
 
     return jsonify({"error": "Name not found"}), 404
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
