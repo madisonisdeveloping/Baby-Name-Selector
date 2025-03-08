@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby Name Selector</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f0f0; }
+        .container { width: 60%; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); }
+        select, input, button { margin: 10px; padding: 10px; font-size: 16px; }
+        ul { list-style-type: none; padding: 0; }
+        li { padding: 5px; cursor: pointer; }
+        li:hover { background-color: #ddd; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Baby Name Selector</h1>
+
+        <label for="gender">Select Gender:</label>
+        <select id="gender">
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+
+        <label for="start-letter">Starting Letter:</label>
+        <input type="text" id="start-letter" maxlength="1" placeholder="A-Z">
+
+        <button onclick="fetchNames()">Filter Names</button>
+
+        <h3>Names:</h3>
+        <ul id="names-list"></ul>
+
+        <h3 id="random-name"></h3>
+    </div>
+
+    <script>
+        async function fetchNames() {
+            const gender = document.getElementById("gender").value;
+            const startLetter = document.getElementById("start-letter").value.toUpperCase();
+
+            if (!startLetter.match(/^[A-Z]$/)) {
+                alert("Please enter a valid letter (A-Z).");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/filter-names?gender=${gender}&start_letter=${startLetter}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                const namesList = document.getElementById("names-list");
+                namesList.innerHTML = "";  // Clear previous results
+
+                data.names.forEach(name => {
+                    const li = document.createElement("li");
+                    li.textContent = name;
+                    // li.onclick = () => removeName(name);
+                   namesList.appendChild(li);
+                });
+
+                document.getElementById("random-name").textContent = data.random_name ? `Random Suggestion: ${data.random_name}` : "No names found.";
+            } catch (error) {
+                console.error("Error fetching names:", error);
+            }
+        }
+
+        async function removeName(name) {
+            if (!confirm(`Remove ${name}?`)) return;
+
+            try {
+                const response = await fetch("http://127.0.0.1:5000/remove-name", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    alert(data.success);
+                    fetchNames();  // Refresh list
+                } else {
+                    alert(data.error);
+                }
+            } catch (error) {
+                console.error("Error removing name:", error);
+            }
+        }
+    </script>
+
+</body>
+</html>
