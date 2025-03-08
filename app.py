@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 import gspread
+import random
 from google.oauth2.service_account import Credentials
 
 app = Flask(__name__, template_folder="templates")
@@ -27,8 +28,9 @@ def get_names():
         for entry in all_entries
         if entry["Gender"].strip().lower() == gender.lower()
         and entry["Name"].strip().lower().startswith(start_letter.lower())
-    ))
-
+))
+    random_name = random.choice(filtered_names)
+    filtered_names.random_name = random_name
     return jsonify({"names": filtered_names})
 
 """ @app.route("/remove_name", methods=["POST"])
