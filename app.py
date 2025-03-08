@@ -31,7 +31,7 @@ def get_names():
 ))
     random_name = random.choice(filtered_names) if filtered_names else None
     
-    return jsonify({"names": filtered_names})
+    return jsonify({"names": filtered_names, "random_name": random_name})
 
 """ @app.route("/remove_name", methods=["POST"])
 def remove_name():

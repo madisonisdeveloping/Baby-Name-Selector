@@ -97,19 +97,24 @@
                 const namesList = document.getElementById("names-list");
                 namesList.innerHTML = "";  // Clear previous results
 
+                let randomName = data.random_name; // Get the random name
+
                 data.names.forEach(name => {
                     const li = document.createElement("li");
                     li.textContent = name;
 
-                    // Highlight the selected random name
-                    if (name === data.random_name) {
+                    // Remove previous highlights
+                    li.classList.remove("highlight");
+
+                    // Highlight the randomly selected name
+                    if (name === randomName) {
                         li.classList.add("highlight");
                     }
 
                     namesList.appendChild(li);
                 });
 
-                document.getElementById("random-name").textContent = data.random_name ? `Random Suggestion: ${data.random_name}` : "No more names found.";
+                document.getElementById("random-name").textContent = randomName ? `Random Suggestion: ${randomName}` : "No more names found.";
             } catch (error) {
                 console.error("Error fetching names:", error);
             }
