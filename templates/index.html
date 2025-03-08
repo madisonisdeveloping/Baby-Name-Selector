@@ -46,7 +46,7 @@
             }
 
             try {
-                const response = await fetch("https://baby-names.onrender.com/get_names?gender=Male&start_letter=A");
+                const response = await fetch("https://baby-names.onrender.com/get_names?gender=" + gender + "&start_letter=" + startLetter);
                 const data = await response.json();
 
                 if (data.error) {
