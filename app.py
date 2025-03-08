@@ -29,7 +29,7 @@ def get_names():
         if entry["Gender"].strip().lower() == gender.lower()
         and entry["Name"].strip().lower().startswith(start_letter.lower())
 ))
-    random_name = random.choice(filtered_names)
+    random_name = random.choice(filtered_names)["Name"]
     filtered_names.random_name = random_name
     return jsonify({"names": filtered_names})
 
