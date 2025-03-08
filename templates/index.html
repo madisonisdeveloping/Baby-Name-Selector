@@ -48,8 +48,6 @@
             try {
                 const response = await fetch("https://baby-names.onrender.com/get_names?gender=" + gender + "&start_letter=" + startLetter);
                 const data = await response.json();
-                const errorBox = document.createElement("li");
-                errorBox.textContent = data
 
                 if (data.error) {
                     alert(data.error);

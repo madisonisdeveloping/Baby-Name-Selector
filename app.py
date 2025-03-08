@@ -29,8 +29,8 @@ def get_names():
         if entry["Gender"].strip().lower() == gender.lower()
         and entry["Name"].strip().lower().startswith(start_letter.lower())
 ))
-    random_name = random.choice(filtered_names)[0]
-    filtered_names.random_name = random_name
+    random_name = random.choice(filtered_names) if filtered_names else None
+    
     return jsonify({"names": filtered_names})
 
 """ @app.route("/remove_name", methods=["POST"])
