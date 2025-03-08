@@ -9,16 +9,20 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f0f0f0;
+            background-color: #121212;
+            /* Dark background */
+            color: #e0e0e0;
+            /* Light text */
         }
 
         .container {
             width: 60%;
             margin: auto;
-            background: white;
+            background: #1e1e1e;
+            /* Darker container */
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 2px 2px 10px rgba(255, 255, 255, 0.1);
         }
 
         select,
@@ -27,6 +31,22 @@
             margin: 10px;
             padding: 10px;
             font-size: 16px;
+            background: #333;
+            /* Darker input fields */
+            color: #e0e0e0;
+            border: 1px solid #444;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
         }
 
         ul {
@@ -37,15 +57,18 @@
         li {
             padding: 5px;
             cursor: pointer;
+            background: #1e1e1e;
+            color: #e0e0e0;
         }
 
         li:hover {
-            background-color: #ddd;
+            background-color: #333;
         }
 
         .highlight {
             font-weight: bold;
             background-color: #ffeb3b;
+            color: #000;
             border-radius: 5px;
             padding: 5px;
             transition: background-color 0.3s ease-in-out;
@@ -95,16 +118,20 @@
                 }
 
                 const namesList = document.getElementById("names-list");
-                namesList.innerHTML = "";  // Clear previous results
+                namesList.innerHTML = ""; // Clear previous results
 
-                let randomName = data.random_name; // Get the random name
+                let randomName = data.random_name;
+                let sortedNames = [...data.names];
 
-                data.names.forEach(name => {
+                // Move random name to the top of the list
+                if (randomName) {
+                    sortedNames = sortedNames.filter(name => name !== randomName); // Remove it from the list
+                    sortedNames.unshift(randomName); // Add to the top
+                }
+
+                sortedNames.forEach(name => {
                     const li = document.createElement("li");
                     li.textContent = name;
-
-                    // Remove previous highlights
-                    li.classList.remove("highlight");
 
                     // Highlight the randomly selected name
                     if (name === randomName) {
