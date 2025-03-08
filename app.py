@@ -31,7 +31,7 @@ def get_names():
 
     return jsonify({"names": filtered_names})
 
-@app.route("/remove_name", methods=["POST"])
+""" @app.route("/remove_name", methods=["POST"])
 def remove_name():
     data = request.get_json()
     name = data.get("name")
@@ -47,7 +47,7 @@ def remove_name():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-    return jsonify({"error": "Name not found"}), 404
+    return jsonify({"error": "Name not found"}), 404 """
 
 @app.route("/")
 def home():

@@ -64,7 +64,7 @@
                    namesList.appendChild(li);
                 });
 
-                document.getElementById("random-name").textContent = data.random_name ? `Random Suggestion: ${data.random_name}` : "No names found.";
+                document.getElementById("random-name").textContent = data.random_name ? `Random Suggestion: ${data.random_name}` : "No more names found.";
             } catch (error) {
                 console.error("Error fetching names:", error);
             }
