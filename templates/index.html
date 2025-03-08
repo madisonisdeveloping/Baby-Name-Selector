@@ -1,18 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baby Name Selector</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f0f0; }
-        .container { width: 60%; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); }
-        select, input, button { margin: 10px; padding: 10px; font-size: 16px; }
-        ul { list-style-type: none; padding: 0; }
-        li { padding: 5px; cursor: pointer; }
-        li:hover { background-color: #ddd; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            width: 60%;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        select,
+        input,
+        button {
+            margin: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        li:hover {
+            background-color: #ddd;
+        }
+
+        .highlight {
+            font-weight: bold;
+            background-color: #ffeb3b;
+            border-radius: 5px;
+            padding: 5px;
+            transition: background-color 0.3s ease-in-out;
+        }
     </style>
 </head>
+
 <body>
 
     <div class="container">
@@ -60,8 +100,13 @@
                 data.names.forEach(name => {
                     const li = document.createElement("li");
                     li.textContent = name;
-                    // li.onclick = () => removeName(name);
-                   namesList.appendChild(li);
+
+                    // Highlight the selected random name
+                    if (name === data.random_name) {
+                        li.classList.add("highlight");
+                    }
+
+                    namesList.appendChild(li);
                 });
 
                 document.getElementById("random-name").textContent = data.random_name ? `Random Suggestion: ${data.random_name}` : "No more names found.";
@@ -70,28 +115,29 @@
             }
         }
 
-/*         async function removeName(name) {
-            if (!confirm(`Remove ${name}?`)) return;
-
-            try {
-                const response = await fetch("http://127.0.0.1:5000/remove-name", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name })
-                });
-
-                const data = await response.json();
-                if (data.success) {
-                    alert(data.success);
-                    fetchNames();  // Refresh list
-                } else {
-                    alert(data.error);
-                }
-            } catch (error) {
-                console.error("Error removing name:", error);
-            }
-        } */
+        /*         async function removeName(name) {
+                    if (!confirm(`Remove ${name}?`)) return;
+        
+                    try {
+                        const response = await fetch("http://127.0.0.1:5000/remove-name", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ name })
+                        });
+        
+                        const data = await response.json();
+                        if (data.success) {
+                            alert(data.success);
+                            fetchNames();  // Refresh list
+                        } else {
+                            alert(data.error);
+                        }
+                    } catch (error) {
+                        console.error("Error removing name:", error);
+                    }
+                } */
     </script>
 
 </body>
+
 </html>
