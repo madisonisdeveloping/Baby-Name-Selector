@@ -197,8 +197,10 @@
             const gender = document.getElementById("gender").value;
 
             try {
-                // Fetch all names by gender (using same endpoint as /get_names but with no start_letter)
-                const response = await fetch(`https://baby-names.onrender.com/get_names?gender=${gender}&start_letter=A`);
+                // Call without start_letter to fetch ALL names of that gender
+                const response = await fetch(
+                    `https://baby-names.onrender.com/get_names?gender=${gender}`
+                );
                 const data = await response.json();
 
                 if (data.error || !data.names.length) {
@@ -206,27 +208,32 @@
                     return;
                 }
 
-                // Pick a random name
-                const randomName = data.random_name || data.names[Math.floor(Math.random() * data.names.length)];
+                // Get the random name from the response
+                const randomName = data.random_name;
 
-                // Update random name heading
-                document.getElementById("random-name").textContent = `🎲 Random ${gender} Name: ${randomName}`;
+                // Update the heading
+                document.getElementById(
+                    "random-name"
+                ).textContent = `🎲 Random ${gender} Name: ${randomName}`;
 
-                // Populate full list
+                // Float the random name to the top, then the rest alphabetically
                 const namesList = document.getElementById("names-list");
                 namesList.innerHTML = "";
 
-                data.names.sort().forEach(name => {
+                // Remove the randomName from the array, then sort what's left
+                const others = data.names.filter((n) => n !== randomName).sort();
+
+                // Rebuild: first the randomName (highlighted), then others
+                const first = document.createElement("li");
+                first.textContent = randomName;
+                first.classList.add("highlight");
+                namesList.appendChild(first);
+
+                for (const name of others) {
                     const li = document.createElement("li");
                     li.textContent = name;
-
-                    if (name === randomName) {
-                        li.classList.add("highlight");
-                    }
-
                     namesList.appendChild(li);
-                });
-
+                }
             } catch (err) {
                 console.error("Error fetching names:", err);
                 alert("Something went wrong.");
