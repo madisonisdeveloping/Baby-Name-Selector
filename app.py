@@ -17,46 +17,29 @@ sheet = client.open(SHEET_NAME).sheet1
 @app.route("/get_names", methods=["GET"])
 def get_names():
     gender = request.args.get("gender")
-    start_letter = request.args.get("start_letter")
-
-    if not gender or not start_letter:
-        return jsonify({"error": "Missing parameters"}), 400
-
-    all_entries = sheet.get_all_records()
-    filtered_names = list(set(
-        entry["Name"]
-        for entry in all_entries
-        if entry["Gender"].strip().lower() == gender.lower()
-        and entry["Name"].strip().lower().startswith(start_letter.lower())
-))
-    random_name = random.choice(filtered_names) if filtered_names else None
-    
-    return jsonify({"names": filtered_names, "random_name": random_name})
-
-@app.route("/get_names", methods=["GET"])
-def get_names():
-    gender = request.args.get("gender")
-    start_letter = request.args.get("start_letter")  # might be None
+    start_letter = request.args.get("start_letter")  # optional
 
     if not gender:
         return jsonify({"error": "Missing gender parameter"}), 400
 
     all_entries = sheet.get_all_records()
-    # If start_letter provided, filter by it; otherwise take all
+
+    # Filter by gender
     filtered = [
         entry["Name"]
         for entry in all_entries
         if entry["Gender"].strip().lower() == gender.lower()
-        and entry["Name"].strip()  # non-empty
+        and entry["Name"].strip()  # ensure name exists
         and (not start_letter or entry["Name"].strip().lower().startswith(start_letter.lower()))
     ]
-    # de-duplicate
-    filtered_names = list(set(filtered))
 
-    # pick a random one if any
+    filtered_names = list(set(filtered))  # deduplicate
     random_name = random.choice(filtered_names) if filtered_names else None
 
-    return jsonify({"names": filtered_names, "random_name": random_name})
+    return jsonify({
+        "names": filtered_names,
+        "random_name": random_name
+    })
 
 """ @app.route("/remove_name", methods=["POST"])
 def remove_name():
