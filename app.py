@@ -33,24 +33,30 @@ def get_names():
     
     return jsonify({"names": filtered_names, "random_name": random_name})
 
-@app.route("/random_name", methods=["GET"])
-def random_name():
+@app.route("/get_names", methods=["GET"])
+def get_names():
     gender = request.args.get("gender")
+    start_letter = request.args.get("start_letter")  # might be None
+
     if not gender:
         return jsonify({"error": "Missing gender parameter"}), 400
 
     all_entries = sheet.get_all_records()
-    filtered_names = list(set(
+    # If start_letter provided, filter by it; otherwise take all
+    filtered = [
         entry["Name"]
         for entry in all_entries
         if entry["Gender"].strip().lower() == gender.lower()
-        and entry["Name"].strip()
-    ))
+        and entry["Name"].strip()  # non-empty
+        and (not start_letter or entry["Name"].strip().lower().startswith(start_letter.lower()))
+    ]
+    # de-duplicate
+    filtered_names = list(set(filtered))
 
-    if filtered_names:
-        return jsonify({"random_name": random.choice(filtered_names)})
-    else:
-        return jsonify({"error": f"No {gender} names found"}), 404
+    # pick a random one if any
+    random_name = random.choice(filtered_names) if filtered_names else None
+
+    return jsonify({"names": filtered_names, "random_name": random_name})
 
 """ @app.route("/remove_name", methods=["POST"])
 def remove_name():
