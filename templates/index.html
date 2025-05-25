@@ -197,7 +197,7 @@
             const gender = document.getElementById("gender").value;
 
             try {
-                // Fetch all names by gender (using same endpoint as /get_names but with no start_letter)
+                // Fetch names for the selected gender using a dummy A-Z filter
                 const response = await fetch(`https://baby-names.onrender.com/get_names?gender=${gender}&start_letter=A`);
                 const data = await response.json();
 
@@ -206,24 +206,28 @@
                     return;
                 }
 
-                // Pick a random name
-                const randomName = data.random_name || data.names[Math.floor(Math.random() * data.names.length)];
+                const allNames = [...data.names];
+                const randomName = data.random_name || allNames[Math.floor(Math.random() * allNames.length)];
 
-                // Update random name heading
-                document.getElementById("random-name").textContent = `🎲 Random ${gender} Name: ${randomName}`;
-
-                // Populate full list
+                // Float the random name to the top
                 const namesList = document.getElementById("names-list");
                 namesList.innerHTML = "";
 
-                data.names.sort().forEach(name => {
+                document.getElementById("random-name").textContent = `🎲 Random ${gender} Name: ${randomName}`;
+
+                // Remove the random name from the list if it appears
+                const restOfNames = allNames.filter(name => name !== randomName).sort();
+
+                // Add random name at the top with highlight
+                const liRandom = document.createElement("li");
+                liRandom.textContent = randomName;
+                liRandom.classList.add("highlight");
+                namesList.appendChild(liRandom);
+
+                // Add the rest
+                restOfNames.forEach(name => {
                     const li = document.createElement("li");
                     li.textContent = name;
-
-                    if (name === randomName) {
-                        li.classList.add("highlight");
-                    }
-
                     namesList.appendChild(li);
                 });
 
@@ -233,6 +237,7 @@
             }
         }
     </script>
+
 
 </body>
 
