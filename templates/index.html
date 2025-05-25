@@ -91,6 +91,7 @@
         <input type="text" id="start-letter" maxlength="1" placeholder="A-Z">
 
         <button onclick="fetchNames()">Filter Names</button>
+        <button onclick="promptRandomName()" style="background-color: #34A853;">🎲 Random Name</button>
 
         <h3>Names:</h3>
         <ul id="names-list"></ul>
@@ -168,6 +169,29 @@
                         console.error("Error removing name:", error);
                     }
                 } */
+
+    function promptRandomName() {
+        const gender = prompt("Enter gender (Male/Female):");
+        if (!gender || !["male", "female"].includes(gender.toLowerCase())) {
+            alert("Please enter a valid gender: Male or Female");
+            return;
+        }
+
+        fetch(`https://baby-names.onrender.com/random_name?gender=${gender}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.random_name) {
+                    document.getElementById("random-name").textContent = `Random ${gender} Name: ${data.random_name}`;
+                    alert(`🎉 Random ${gender} name: ${data.random_name}`);
+                } else {
+                    alert(data.error || "No name found.");
+                }
+            })
+            .catch(err => {
+                console.error("Fetch error:", err);
+                alert("Something went wrong.");
+            });
+    }
     </script>
 
 </body>

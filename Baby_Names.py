@@ -126,6 +126,27 @@ class AppleStyleApp(tk.Tk):
 
         remove_button = ttk.Button(button_frame, text="Remove Selected Name", command=self.remove_name)
         remove_button.grid(row=0, column=1, padx=10)
+        
+        random_button = ttk.Button(button_frame, text="Random Name", command=self.get_random_name)
+
+        random_frame = ttk.Frame(self)
+        random_frame.pack(pady=(5, 15))  # Adds spacing between button groups
+
+        random_button = tk.Button(
+            random_frame,
+            text="🎲 Random Name",
+            font=("Helvetica", 11, "bold"),
+            command=self.get_random_name_prompt,
+            bg="#34A853",  # Custom green color
+            fg="white",
+            activebackground="#2C8C47",
+            relief="flat",
+            padx=10,
+            pady=5
+        )
+        random_button.pack()
+        
+        ##################################################
 
         # Sun & Moon toggle
         self.mode_icon = tk.StringVar(value="🌜")  # Moon symbol
@@ -205,6 +226,45 @@ class AppleStyleApp(tk.Tk):
         error_window.configure(bg="#F5F5F7")
         ttk.Label(error_window, text=message, wraplength=250).pack(pady=20)
 
+    def get_random_name_prompt(self):
+        prompt = tk.Toplevel(self)
+        prompt.title("Select Gender")
+        prompt.geometry("250x150")
+        prompt.configure(bg=self.colors["bg"])
+
+        ttk.Label(prompt, text="Get a random name for:", font=("Helvetica", 12)).pack(pady=10)
+
+        ttk.Button(prompt, text="Male", command=lambda: [prompt.destroy(), self.get_random_name("Male")]).pack(pady=5)
+        ttk.Button(prompt, text="Female", command=lambda: [prompt.destroy(), self.get_random_name("Female")]).pack(pady=5)
+
+    def get_random_name(self, gender):
+        credentials_file = "your_credentials.json"
+        sheet_name = "acottonsock's Baby Names (Responses)"
+
+        try:
+            sheet = connect_to_google_sheets(credentials_file, sheet_name)
+            all_entries = sheet.get_all_records()
+            filtered_names = list(set(
+                entry["Name"]
+                for entry in all_entries
+                if entry["Gender"].strip().lower() == gender.lower()
+                and entry["Name"].strip()
+            ))
+
+            self.names_listbox.delete(0, tk.END)
+            for name in filtered_names:
+                self.names_listbox.insert(tk.END, name)
+
+            if filtered_names:
+                random_name = random.choice(filtered_names)
+                self.highlight_name(random_name)
+                self.show_error(f"Random {gender} name: {random_name}")
+            else:
+                self.show_error(f"No {gender} names found in the sheet.")
+        except Exception as e:
+            self.show_error(f"Error: {e}")
+
 if __name__ == "__main__":
+    
     app = AppleStyleApp()
     app.mainloop()
